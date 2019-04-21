@@ -31,7 +31,7 @@ def pred_ims(model, ims):
     return preds.data.cpu().numpy()  # .flatten()
 
 
-def load_data(imagenet_dir='/scratch/users/jmurdoch/imagenet'):
+def load_data(imagenet_dir='/Users/yezheng/github/acd/imagenet'):
     traindir = oj(imagenet_dir, 'train')
     valdir = oj(imagenet_dir, 'val')
     num_workers = 1

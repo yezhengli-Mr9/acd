@@ -120,10 +120,12 @@ def get_scores_1d(batch, model, method, label, only_one, score_orig, text_orig, 
 
 # return scores (higher is better)
 def get_scores_2d(model, method, ims, im_torch=None, pred_ims=None, model_type='mnist', device='cuda'):
+    print("[score_funcs.py get_scores_2d] device", device, "ims",ims.shape)
     scores = []
     if method == 'cd':
         for i in range(ims.shape[0]):  # can use tqdm here, need to use batches
-            scores.append(cd.cd(np.expand_dims(ims[i], 0), im_torch, model, model_type, device=device)[0].data.cpu().numpy())
+            print("[score_funcs.py get_scores_2d] i", i)
+            scores.append(cd.cd(np.expand_dims(ims[i], 0), im_torch, model, device=device, model_type =model_type)[0].data.cpu().numpy())
         scores = np.squeeze(np.array(scores))
     elif method == 'build_up':
         for i in range(ims.shape[0]):  # can use tqdm here, need to use batches

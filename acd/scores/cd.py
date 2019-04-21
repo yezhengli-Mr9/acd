@@ -18,7 +18,7 @@ def propagate_tanh_two(a, b):
 
 
 # propagate convolutional or linear layer
-def propagate_conv_linear(relevant, irrelevant, module, device='cuda'):
+def propagate_conv_linear(relevant, irrelevant, module, device):
     bias = module(torch.zeros(irrelevant.size()).to(device))
     rel = module(relevant) - bias
     irrel = module(irrelevant) - bias
@@ -33,7 +33,7 @@ def propagate_conv_linear(relevant, irrelevant, module, device='cuda'):
 
 
 # propagate ReLu nonlinearity
-def propagate_relu(relevant, irrelevant, activation, device='cuda'):
+def propagate_relu(relevant, irrelevant, activation, device):
     swap_inplace = False
     try:  # handles inplace
         if activation.inplace:
@@ -85,9 +85,10 @@ def propagate_dropout(relevant, irrelevant, dropout):
 
 
 # get contextual decomposition scores for blob
-def cd(blob, im_torch, model, model_type='mnist', device='cuda'):
+def cd(blob, im_torch, model, device, model_type='mnist'):
     # set up model
     model.eval()
+    print("[cd.py cd] model.eval()")
     im_torch = im_torch.to(device)
     
     # set up blobs
@@ -98,7 +99,7 @@ def cd(blob, im_torch, model, model_type='mnist', device='cuda'):
     if model_type == 'mnist':
         scores = []
         mods = list(model.modules())[1:]
-        relevant, irrelevant = propagate_conv_linear(relevant, irrelevant, mods[0])
+        relevant, irrelevant = propagate_conv_linear(relevant, irrelevant, mods[0], device = device)
         relevant, irrelevant = propagate_pooling(relevant, irrelevant,
                                                  lambda x: F.max_pool2d(x, 2, return_indices=True), model_type='mnist')
         relevant, irrelevant = propagate_relu(relevant, irrelevant, F.relu)
@@ -120,13 +121,14 @@ def cd(blob, im_torch, model, model_type='mnist', device='cuda'):
         mods = list(model.modules())
         for i, mod in enumerate(mods):
             t = str(type(mod))
+#             print("[cd.py cd] i,t",i,t)
             if 'Conv2d' in t or 'Linear' in t:
                 if 'Linear' in t:
                     relevant = relevant.view(relevant.size(0), -1)
                     irrelevant = irrelevant.view(irrelevant.size(0), -1)
-                relevant, irrelevant = propagate_conv_linear(relevant, irrelevant, mod)
+                relevant, irrelevant = propagate_conv_linear(relevant, irrelevant, mod, device = device)
             elif 'ReLU' in t:
-                relevant, irrelevant = propagate_relu(relevant, irrelevant, mod)
+                relevant, irrelevant = propagate_relu(relevant, irrelevant, mod, device = device)
             elif 'MaxPool2d' in t:
                 relevant, irrelevant = propagate_pooling(relevant, irrelevant, mod, model_type=model_type)
             elif 'Dropout' in t:

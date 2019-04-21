@@ -12,7 +12,7 @@ def gen_tiles(image, fill=0, method='occlusion', prev_im=None,
     R = image.shape[0]
     C = image.shape[1]
 
-    if image.ndim == 2:  # mnist case
+    if 2 == image.ndim:  # mnist case
         if num_ims is None:  # check if theres a limit on how many ims to have
             num_ims = ceil(R / sweep_dim) * ceil(C / sweep_dim)
         # print('sizes', R, C, num_ims)

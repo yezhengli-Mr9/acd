@@ -79,7 +79,7 @@ def visualize_batch_preds(preds, prev_im=None, N=28, im_num_start=0):
 
 def visualize_ims_list(ims_list, title='', cmap_new=None, subplot_row=None, subplot_rows=3, colorbar=True, im_orig=None,
                        plot_overlay=False, mturk=False, num_ims=None, comp_scores_raw=None, lab_num_correct=None,
-                       skip_first=False, mnist=False):
+                       skip_first=False, mnist=False, key_num=None):
     im_segs = []
     if subplot_row is None:
         plt.figure(figsize=(12, 2), facecolor='white')
@@ -171,10 +171,11 @@ def visualize_ims_list(ims_list, title='', cmap_new=None, subplot_row=None, subp
     #     plt.colorbar(p, cax=cax)
 
     plt.subplots_adjust(wspace=0, hspace=0)
+    plt.savefig("figs/visualize_ims_list_{}.png".format(key_num))
 
 
 def visualize_dict_list(dict_list, method='break-down / build-up',
-                        subplot_row=None, subplot_rows=3, lab_num=None, bar_graph=False):
+                        subplot_row=None, subplot_rows=3, lab_num=None, bar_graph=False, key_num  =None):
     # if passed lab_num, plot only lab_num
     if lab_num is not None:
         dict_list_temp = []
@@ -247,7 +248,7 @@ def visualize_dict_list(dict_list, method='break-down / build-up',
 #         print('some empty plots', e)
 
 def visualize_arr_list(arr_list, method='break-down / build-up',
-                       subplot_row=None, subplot_rows=3):
+                       subplot_row=None, subplot_rows=3, key_num = None):
     if subplot_row is None:
         plt.figure(figsize=(12, 2), facecolor='white')
         subplot_row = 1
@@ -271,10 +272,12 @@ def visualize_arr_list(arr_list, method='break-down / build-up',
         if i == 0:
             plt.ylabel('raw combined score for ' + method)
     plt.subplots_adjust(wspace=0, hspace=0)
+    plt.savefig("figs/visualize_arr_list_{}.png".format(key_num))
+    plt.close()
 
 
 def visualize_original_preds(im_orig, lab_num, comp_scores_raw_list, scores_orig_raw,
-                             subplot_rows=5, dset=None, mturk=False, tits=None):
+                             subplot_rows=5, dset=None, key_num = None, mturk=False, tits=None):
     num_cols = 7 - mturk
     plt.subplot(subplot_rows, num_cols, 1)
     plt.imshow(im_orig)
@@ -329,14 +332,15 @@ def visualize_original_preds(im_orig, lab_num, comp_scores_raw_list, scores_orig
                     plt.title(tits[i + 2])
                 else:
                     plt.title('CD (' + dset.lab_dict[x][:10] + ')')  # +'\n'+ str(preds[x]))
-
+    plt.savefig("figs/visualize_original_preds_{}.png".format(key_num))
+    plt.close()
     return ind, labs
 
 
 def visualize_dict_list_top(dict_list, method='break-down / build-up',
                             subplot_row=None, subplot_rows=3, lab_num=None,
                             ind=None, labs=None, num_top=5, dset=None, use_orig_top=True,
-                            num_ims=None, skip_first=False, vmin=None, vmax=None):
+                            num_ims=None, skip_first=False, vmin=None, vmax=None, key_num  =None):
     if subplot_row is None:
         plt.figure(figsize=(12, 2), facecolor='white')
         subplot_row = 1
@@ -393,6 +397,8 @@ def visualize_dict_list_top(dict_list, method='break-down / build-up',
         else:
             plt.ylabel('patch importance')
     plt.subplots_adjust(wspace=0, hspace=0)
+    plt.savefig("figs/visualize_dict_list_top_{}.png".format(key_num))
+    plt.close()
 
 
 def visualize_top_classes(model, dset, im_orig, scores_orig_raw):
@@ -457,3 +463,4 @@ def visualize_original_preds_mnist(im_orig, lab_num, comp_scores_raw_list, score
                 plt.title(x)
 
     return ind, labs
+

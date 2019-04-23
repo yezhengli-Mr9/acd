@@ -105,10 +105,10 @@ def agglomerate(model, pred_ims, percentile_include, method, sweep_dim,
     print("[agg_2d.py agglomerate] score_funcs.get_scores_2d")
     scores_track = np.copy(refine_scores(scores_orig_raw, lab_num)).reshape(
         size_downsampled)  # keep track of these scores
-
+    print("[agg_2d.py agglomerate] threshold_scores")
     # threshold im
     im_thresh = threshold_scores(scores_track, percentile_include, method)
-    print("[agg_2d.py agglomerate] threshold_scores")
+
     # initialize lists
     scores_list = [np.copy(scores_track)]
     im_thresh_list = [im_thresh]

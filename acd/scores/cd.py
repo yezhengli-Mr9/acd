@@ -88,7 +88,7 @@ def propagate_dropout(relevant, irrelevant, dropout):
 def cd(blob, im_torch, model, device, model_type='mnist'):
     # set up model
     model.eval()
-    print("[cd.py cd] model.eval()")
+#     print("[cd.py cd] model.eval()")
     im_torch = im_torch.to(device)
     
     # set up blobs
